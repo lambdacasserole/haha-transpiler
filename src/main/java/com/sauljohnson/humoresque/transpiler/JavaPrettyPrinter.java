@@ -60,7 +60,15 @@ public class JavaPrettyPrinter implements PrettyPrinter {
                 .replace("\r", "")
                 .replace(";", ";\n")
                 .replace("{", "\n{\n")
-                .replace("}", "\n}\n");
+                .replace("}", "\n}\n")
+                .replace("//", "\n//\n")
+                .replace("/*", "\n/*")
+                .replace("*/", "*/\n");
+
+        // Remove double line breaks.
+        while (normalisedSource.contains("\n\n")) {
+            normalisedSource = normalisedSource.replace("\n\n", "\n");
+        }
 
         // Split into lines.
         String[] lines = normalisedSource.split("\n");

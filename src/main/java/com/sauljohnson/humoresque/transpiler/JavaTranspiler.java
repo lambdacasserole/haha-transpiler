@@ -11,6 +11,22 @@ import com.sauljohnson.humoresque.parser.model.*;
  */
 public class JavaTranspiler implements Transpiler {
 
+    private String removeDoubles(String s, String inp) {
+        String r = inp;
+        while (r.contains(s + s)) {
+            r = r.replace(s + s, s);
+        }
+        return r;
+    }
+
+    private String removeDoubleNewlines(String s) {
+        return removeDoubles("\n", s);
+    }
+
+    private String removeDoubleSpaces(String s) {
+        return removeDoubles(" ", s);
+    }
+
     /**
      * Concatenates tokens together as a string, optionally transforming them.
      *
@@ -187,8 +203,12 @@ public class JavaTranspiler implements Transpiler {
                     switch (component.getProgramComponentType()) {
                         case ANNOTATION:
                             Annotation annotation = (Annotation) component;
+                            String annotationString = concatTokens(annotation.getTokens())
+                                    .replace("{", "")
+                                    .replace("}", "")
+                                    .replace("\n", " ");
                             sb.append("/*")
-                                    .append(concatTokens(annotation.getTokens()))
+                                    .append(removeDoubleSpaces(annotationString))
                                     .append("*/\n");
                             break;
                         case STATEMENT:
