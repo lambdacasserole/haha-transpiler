@@ -141,9 +141,22 @@ public class JavaTranspiler implements Transpiler {
      * @param assignment    the assignment to emit
      */
     private void emitAssignment(StringBuilder sb, Assignment assignment) {
-        sb.append(assignment.getIdentifier())
-                .append(" = ")
-                .append(concatTokens(assignment.getExpression()))
+
+        // Append identifier.
+        sb.append(assignment.getIdentifier());
+
+        // Append indexing syntax if array assignment.
+        if (assignment.getIsArrayAssignment()) {
+            ArrayAssignment arrayAssignment = (ArrayAssignment) assignment;
+            sb.append(arrayAssignment.getIdentifier())
+                    .append("[")
+                    .append(concatTokens(arrayAssignment.getIndex(), true))
+                    .append("]");
+        }
+
+        // Append right-hand side.
+        sb.append(" = ")
+                .append(concatTokens(assignment.getExpression(), true))
                 .append(";\n");
     }
 
@@ -157,49 +170,51 @@ public class JavaTranspiler implements Transpiler {
     private void emitStatement(StringBuilder sb, Statement statement, boolean excludeBlockBraces) {
 
         // Branch based on type of statement.
-        // TODO: Make this cleaner avoid instanceof. Requires work on parser.
-        if (statement instanceof Block) {
+        switch (statement.getStatementType()) {
+            case BLOCK:
+                // Cast to block.
+                Block block = (Block) statement;
 
-            // Cast to block.
-            Block block = (Block) statement;
-
-            // Open block.
-            if (!excludeBlockBraces) {
-                sb.append("{\n");
-            }
-
-            // Go through components in block.
-            for (ProgramComponent component : block.getProgramComponents()) {
-
-                // Deal with annotations here. They can only occur within blocks.
-                switch (component.getType()) {
-                    case ANNOTATION:
-                        Annotation annotation = (Annotation) component;
-                        sb.append("/*")
-                                .append(concatTokens(annotation.getTokens()))
-                                .append("*/\n");
-                        break;
-                    case STATEMENT:
-                        emitStatement(sb, (Statement) component); // Emit regular statement.
-                        break;
-                    default:
-                        break;
+                // Open block.
+                if (!excludeBlockBraces) {
+                    sb.append("{\n");
                 }
-            }
 
-            // Close block.
-            if (!excludeBlockBraces) {
-                sb.append("}\n");
-            }
-        }
-        else if (statement instanceof Loop) {
-            emitLoop(sb, (Loop) statement); // Emit loop structure.
-        }
-        else if (statement instanceof Conditional) {
-            emitConditional(sb, (Conditional) statement); // Emit conditional statement.
-        }
-        else if (statement instanceof Assignment) {
-            emitAssignment(sb, (Assignment) statement); // Emit assignment.
+                // Go through components in block.
+                for (ProgramComponent component : block.getProgramComponents()) {
+
+                    // Deal with annotations here. They can only occur within blocks.
+                    switch (component.getProgramComponentType()) {
+                        case ANNOTATION:
+                            Annotation annotation = (Annotation) component;
+                            sb.append("/*")
+                                    .append(concatTokens(annotation.getTokens()))
+                                    .append("*/\n");
+                            break;
+                        case STATEMENT:
+                            emitStatement(sb, (Statement) component); // Emit regular statement.
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                // Close block.
+                if (!excludeBlockBraces) {
+                    sb.append("}\n");
+                }
+                break;
+            case LOOP:
+                emitLoop(sb, (Loop) statement); // Emit loop structure.
+                break;
+            case CONDITIONAL:
+                emitConditional(sb, (Conditional) statement); // Emit conditional statement.
+                break;
+            case ASSIGNMENT:
+                emitAssignment(sb, (Assignment) statement); // Emit assignment.
+                break;
+            default:
+                break;
         }
     }
 
@@ -280,6 +295,19 @@ public class JavaTranspiler implements Transpiler {
 
         // Emit body of function.
         emitFunctionBody(sb, function);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public String transpileFunction(Function function) {
+
+        // Emit function.
+        StringBuilder sb = new StringBuilder();
+        emitFunction(sb, function);
+
+        // Return emitted function.
+        return sb.toString();
     }
 
     /**
