@@ -11,20 +11,39 @@ import com.sauljohnson.humoresque.parser.model.*;
  */
 public class JavaTranspiler implements Transpiler {
 
-    private String removeDoubles(String s, String inp) {
-        String r = inp;
-        while (r.contains(s + s)) {
-            r = r.replace(s + s, s);
+    /**
+     * Removes double occurrences of a term from an input string.
+     *
+     * @param term  the term
+     * @param input the input string
+     * @return      the input string with double occurrences removed
+     */
+    private String removeDoubles(String term, String input) {
+        String output = input;
+        while (output.contains(term + term)) {
+            output = output.replace(term + term, term);
         }
-        return r;
+        return output;
     }
 
-    private String removeDoubleNewlines(String s) {
-        return removeDoubles("\n", s);
+    /**
+     * Removes double newlines from the input string.
+     *
+     * @param input the input string
+     * @return      the input string with double newlines removed
+     */
+    private String removeDoubleNewlines(String input) {
+        return removeDoubles("\n", input);
     }
 
-    private String removeDoubleSpaces(String s) {
-        return removeDoubles(" ", s);
+    /**
+     * Removes double spaces from the input string.
+     *
+     * @param input the input string
+     * @return      the input string with double spaces removed
+     */
+    private String removeDoubleSpaces(String input) {
+        return removeDoubles(" ", input);
     }
 
     /**

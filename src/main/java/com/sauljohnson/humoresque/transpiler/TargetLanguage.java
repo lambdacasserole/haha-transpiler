@@ -1,13 +1,12 @@
 package com.sauljohnson.humoresque.transpiler;
 
 /**
- * Represents a mode that the application can run in.
+ * Represents a target language for transpilation.
  *
  * @since 04/11/2019
  * @author Saul Johnson <saul.a.johnson@gmail.com>
  */
-public enum Mode {
+public enum TargetLanguage {
     DEFAULT,
-    ENUMERATE_FUNCTIONS,
-    EMIT_FUNCTIONS
+    JAVA
 }
