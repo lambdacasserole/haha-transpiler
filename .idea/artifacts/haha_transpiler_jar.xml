@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="haha-transpiler:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/haha_transpiler_jar</output-path>
+    <root id="archive" name="haha-transpiler.jar">
+      <element id="module-output" name="haha-transpiler" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/lambdacasserole/haha-parser/v1.5/haha-parser-v1.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.6/commons-io-2.6.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
