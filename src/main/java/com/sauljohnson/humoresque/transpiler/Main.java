@@ -105,7 +105,7 @@ public class Main {
             System.exit(1);
         }
 
-        //
+        // Deal with source file.
         try {
             // Read in source.
             String source = readFileText(parsedArgs.getSourceFile());
@@ -142,13 +142,26 @@ public class Main {
                     }
                     break;
                 case EMIT_FUNCTIONS:
-                    // Get target functions to transpile.
-                    String[] targetFunctionString = parsedArgs.getTargetFunctions();
-                    List<String> targetFunctionList = Arrays.asList(targetFunctionString);
-                    // TODO: Use a stack here yeah?
-                    for (Function function : program.getFunctions()) {
-                        if (targetFunctionList.contains(function.getIdentifier())) {
-                            System.out.println(transpiler.transpileFunction(function));
+                    // For each target function to transpile.
+                    String[] targetFunctionNames = parsedArgs.getTargetFunctions();
+                    for (String targetFunctionName : targetFunctionNames) {
+
+                        // Find and emit function.
+                        boolean found = false;
+                        for (Function function : program.getFunctions()) {
+                            if (targetFunctionName.equals(function.getIdentifier())) {
+                                String compiledFunction = transpiler.transpileFunction(function);
+                                String prettyFunction = prettyPrinter.prettyPrint(compiledFunction);
+                                System.out.println(prettyFunction);
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        // Function not found.
+                        if (!found) {
+                            System.err.println("No function named '" + targetFunctionName + "' found.");
+                            System.exit(1);
                         }
                     }
                     break;
