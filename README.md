@@ -59,10 +59,10 @@ The options are quite straightforward:
 
 | Option        | Values              | Required? | Description                                                               |
 |---------------|---------------------|-----------|---------------------------------------------------------------------------|
-| input_file    | Any                 | Yes       | The file containing unseen data.                                          |
-| `-e`          | None                | No        | Enumeration mode. Prints out the names of all functions in the file.      |
+| input_file    | Any                 | Yes       | The HAHA source file to transpile.                                        |
+| `-e`          | None                | No        | Enumeration mode. Prints out the names of all functions in the file.       |
 | `-f`          | `fname1,fname2,...` | No        | Transpile only specific functions with names in the comma-delimited list. |
 | `-a`          | `fname`             | No        | Arity mode. Gets the number of arguments taken by the specified function. |
 | `-t`          | Target language     | No        | Specify target language. Defaults to Java. Only Java currently supported. |
 
-Results are written to standard output. The `plain` format produced comma-delimited output with headings. The `coq` format option will produce a lookup structure compatible with [the Coq proof assistant](https://coq.inria.fr/).
+Results are written to standard output.
