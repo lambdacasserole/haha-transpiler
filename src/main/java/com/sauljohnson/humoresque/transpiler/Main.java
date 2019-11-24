@@ -85,6 +85,20 @@ public class Main {
                             System.err.println("You must specify a target language after the -t option.");
                             System.exit(1);
                         }
+                        break;
+                    case 'a':
+                        // Arity mode means get number of arguments a function takes.
+                        parsedArgs.setMode(Mode.GET_ARITY);
+                        String arityIdentifierString = getArgumentValue(args, arg);
+                        if (arityIdentifierString != null) {
+                            parsedArgs.setTargetFunctions(arityIdentifierString.split(","));
+                        } else {
+                            // No function names given.
+                            System.err.println("You must specify a set of comma-separated function names after the " +
+                                    "-a option.");
+                            System.exit(1);
+                        }
+                        break;
                 }
             }
         }
@@ -153,6 +167,29 @@ public class Main {
                                 String compiledFunction = transpiler.transpileFunction(function);
                                 String prettyFunction = prettyPrinter.prettyPrint(compiledFunction);
                                 System.out.println(prettyFunction);
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        // Function not found.
+                        if (!found) {
+                            System.err.println("No function named '" + targetFunctionName + "' found.");
+                            System.exit(1);
+                        }
+                    }
+                    break;
+                case GET_ARITY:
+
+                    // For each target function to transpile.
+                    String[] arityTargetFunctionNames = parsedArgs.getTargetFunctions();
+                    for (String targetFunctionName : arityTargetFunctionNames) {
+
+                        // Find and print function arity.
+                        boolean found = false;
+                        for (Function function : program.getFunctions()) {
+                            if (targetFunctionName.equals(function.getIdentifier())) {
+                                System.out.println(function.getArguments().length);
                                 found = true;
                                 break;
                             }

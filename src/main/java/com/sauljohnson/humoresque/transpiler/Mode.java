@@ -9,5 +9,6 @@ package com.sauljohnson.humoresque.transpiler;
 public enum Mode {
     DEFAULT,
     ENUMERATE_FUNCTIONS,
-    EMIT_FUNCTIONS
+    EMIT_FUNCTIONS,
+    GET_ARITY,
 }
